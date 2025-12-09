@@ -4,49 +4,49 @@
 
 @layer base {
   :root {
-    /* Modern African-Neutral Color Palette */
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%; /* Slate 900 */
+    /* GuardianEye Brand Colors */
+    --background: 0 0% 100%; /* White #FFFFFF */
+    --foreground: 222.2 84% 4.9%; /* Dark Navy #0F172A */
     --card: 0 0% 100%;
     --card-foreground: 222.2 84% 4.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
-    --primary: 159 84% 35%; /* Emerald 600 #059669 */
+    --primary: 221 83% 45%; /* Deep Security Blue #1D4ED8 */
     --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 96.1%; /* Slate 100 */
-    --secondary-foreground: 222.2 47.4% 11.2%; /* Slate 900 */
-    --muted: 210 40% 96.1%; /* Slate 100 */
-    --muted-foreground: 215.4 16.3% 46.9%; /* Slate 600 */
+    --secondary: 210 40% 96.1%; /* Light Gray */
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
     --accent: 210 40% 96.1%;
     --accent-foreground: 222.2 47.4% 11.2%;
-    --destructive: 0 84% 60%; /* Red 600 #dc2626 */
+    --destructive: 350 78% 60%; /* Alert Red #F43F5E */
     --destructive-foreground: 0 0% 100%;
-    --border: 214.3 31.8% 91.4%; /* Slate 200 */
+    --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 159 84% 35%; /* Emerald 600 */
-    --radius: 0.75rem; /* 12px */
+    --ring: 221 83% 45%; /* Deep Security Blue */
+    --radius: 0.75rem; /* 12px - smooth edges */
   }
 
   .dark {
-    --background: 24 9.8% 10%; /* Zinc 900 #18181b */
-    --foreground: 210 40% 98%;
-    --card: 24 9.8% 15%; /* Zinc 800 #27272a */
-    --card-foreground: 210 40% 98%;
-    --popover: 24 9.8% 15%;
-    --popover-foreground: 210 40% 98%;
-    --primary: 159 70% 45%; /* Emerald 500 */
+    --background: 222.2 84% 4.9%; /* Dark Navy #0F172A */
+    --foreground: 0 0% 100%; /* White */
+    --card: 222.2 84% 8%; /* Slightly lighter dark navy */
+    --card-foreground: 0 0% 100%;
+    --popover: 222.2 84% 8%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 221 83% 55%; /* Lighter Deep Security Blue */
     --primary-foreground: 0 0% 100%;
     --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary-foreground: 0 0% 100%;
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
     --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
-    --destructive: 0 72% 51%; /* Red 500 */
+    --accent-foreground: 0 0% 100%;
+    --destructive: 350 78% 60%; /* Alert Red */
     --destructive-foreground: 0 0% 100%;
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 159 70% 45%;
+    --ring: 221 83% 55%;
   }
 }
 

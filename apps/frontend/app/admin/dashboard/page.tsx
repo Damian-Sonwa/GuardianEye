@@ -73,7 +73,7 @@ export default function AdminDashboardPage() {
             <Button variant="ghost" size="icon" onClick={() => router.back()} className="active:scale-95">
               <ArrowLeft className="h-5 w-5" />
             </Button>
-            <Shield className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+            <Shield className="h-6 w-6 text-[#1D4ED8] dark:text-blue-400" />
             <h1 className="text-xl font-bold">Admin Dashboard</h1>
           </div>
           <div className="flex items-center gap-2">
@@ -118,7 +118,7 @@ export default function AdminDashboardPage() {
               <Button
                 variant="default"
                 size="sm"
-                className="h-8 px-3 text-xs active:scale-95 bg-purple-600 hover:bg-purple-700"
+                className="h-8 px-3 text-xs active:scale-95 bg-[#1D4ED8] hover:bg-[#1E40AF]"
                 title="Admin Dashboard (Current)"
                 disabled
               >
@@ -181,8 +181,8 @@ export default function AdminDashboardPage() {
                     </p>
                   )}
                 </div>
-                <div className="p-3 rounded-xl bg-emerald-100 dark:bg-emerald-900/20">
-                  <Users className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                <div className="p-3 rounded-xl bg-[#1D4ED8]/10 dark:bg-[#1D4ED8]/20">
+                  <Users className="h-6 w-6 text-[#1D4ED8] dark:text-blue-400" />
                 </div>
               </div>
             </CardContent>

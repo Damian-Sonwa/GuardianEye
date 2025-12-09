@@ -86,10 +86,10 @@ export default function SecurityDashboardPage() {
   return (
     <div className="flex min-h-screen flex-col bg-background pb-20">
       {/* Header */}
-      <header className="sticky top-0 z-10 border-b-2 border-slate-200 bg-background/95 backdrop-blur-[10px] supports-[backdrop-filter]:bg-background/80 dark:border-slate-700">
+      <header className="sticky top-0 z-10 border-b border-slate-200/50 bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 dark:border-slate-700/50 shadow-sm">
         <div className="flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-3">
-            <Shield className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+            <Shield className="h-6 w-6 text-[#1D4ED8] dark:text-blue-400" />
             <h1 className="text-xl font-bold text-slate-900 dark:text-slate-50">Security Dashboard</h1>
           </div>
           <div className="flex items-center gap-2">

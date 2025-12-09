@@ -22,7 +22,7 @@ export default function HomePage() {
   return (
     <div className="flex min-h-screen flex-col bg-background pb-20">
       {/* Header */}
-      <header className="sticky top-0 z-10 border-b-2 border-slate-200 bg-background/95 backdrop-blur-[10px] supports-[backdrop-filter]:bg-background/80 dark:border-slate-700">
+      <header className="sticky top-0 z-10 border-b border-slate-200/50 bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 dark:border-slate-700/50 shadow-sm">
         <div className="flex h-16 items-center justify-between px-4">
           <h1 className="text-xl font-bold text-slate-900 dark:text-slate-50">{t('home.title')}</h1>
           <div className="flex items-center gap-2">
@@ -31,7 +31,7 @@ export default function HomePage() {
                 <Button
                   variant="default"
                   size="sm"
-                  className="h-8 px-3 text-xs active:scale-95 bg-emerald-600 hover:bg-emerald-700"
+                  className="h-8 px-3 text-xs active:scale-95 bg-[#1D4ED8] hover:bg-[#1E40AF]"
                   title="User Dashboard (Current)"
                   disabled
                 >
@@ -102,53 +102,53 @@ export default function HomePage() {
           <h2 className="mb-6 text-xl font-semibold text-slate-900 dark:text-slate-50">{t('home.quickActions')}</h2>
           <div className="grid grid-cols-2 gap-4">
             <Card
-              className="cursor-pointer transition-all duration-200"
+              className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 rounded-2xl border-2 border-slate-100 dark:border-slate-800"
               onClick={() => router.push('/panic')}
             >
               <CardHeader className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-red-100 dark:bg-red-900/20">
-                  <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" />
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#F43F5E]/10 dark:bg-[#F43F5E]/20">
+                  <AlertTriangle className="h-6 w-6 text-[#F43F5E] dark:text-red-400" />
                 </div>
-                <CardTitle className="text-lg">{t('home.panicButton')}</CardTitle>
+                <CardTitle className="text-lg font-bold">{t('home.panicButton')}</CardTitle>
                 <CardDescription className="text-sm font-medium">{t('home.emergencyAlert')}</CardDescription>
               </CardHeader>
             </Card>
 
             <Card
-              className="cursor-pointer transition-all duration-200"
+              className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 rounded-2xl border-2 border-slate-100 dark:border-slate-800"
               onClick={() => router.push('/report')}
             >
               <CardHeader className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 dark:bg-emerald-900/20">
-                  <Shield className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1D4ED8]/10 dark:bg-[#1D4ED8]/20">
+                  <Shield className="h-6 w-6 text-[#1D4ED8] dark:text-blue-400" />
                 </div>
-                <CardTitle className="text-lg">{t('home.report')}</CardTitle>
+                <CardTitle className="text-lg font-bold">{t('home.report')}</CardTitle>
                 <CardDescription className="text-sm font-medium">{t('home.fileIncident')}</CardDescription>
               </CardHeader>
             </Card>
 
             <Card
-              className="cursor-pointer transition-all duration-200"
+              className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 rounded-2xl border-2 border-slate-100 dark:border-slate-800"
               onClick={() => router.push('/map')}
             >
               <CardHeader className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-100 dark:bg-sky-900/20">
-                  <Map className="h-6 w-6 text-sky-600 dark:text-sky-400" />
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1D4ED8]/10 dark:bg-[#1D4ED8]/20">
+                  <Map className="h-6 w-6 text-[#1D4ED8] dark:text-blue-400" />
                 </div>
-                <CardTitle className="text-lg">{t('home.threatMap')}</CardTitle>
+                <CardTitle className="text-lg font-bold">{t('home.threatMap')}</CardTitle>
                 <CardDescription className="text-sm font-medium">{t('home.viewHotspots')}</CardDescription>
               </CardHeader>
             </Card>
 
             <Card
-              className="cursor-pointer transition-all duration-200"
+              className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 rounded-2xl border-2 border-slate-100 dark:border-slate-800"
               onClick={() => router.push('/identify')}
             >
               <CardHeader className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-100 dark:bg-amber-900/20">
-                  <User className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1D4ED8]/10 dark:bg-[#1D4ED8]/20">
+                  <User className="h-6 w-6 text-[#1D4ED8] dark:text-blue-400" />
                 </div>
-                <CardTitle className="text-lg">{t('home.identify')}</CardTitle>
+                <CardTitle className="text-lg font-bold">{t('home.identify')}</CardTitle>
                 <CardDescription className="text-sm font-medium">{t('home.aiFaceScan')}</CardDescription>
               </CardHeader>
             </Card>
@@ -164,14 +164,14 @@ export default function HomePage() {
           <h2 className="mb-6 text-xl font-semibold text-slate-900 dark:text-slate-50">{t('home.communityAlerts')}</h2>
           <div className="space-y-3">
             {alerts.map((alert) => (
-              <Card key={alert.id} className="border-l-4 border-l-red-600 rounded-xl">
+              <Card key={alert.id} className="border-l-4 border-l-[#F43F5E] rounded-xl">
                 <CardHeader className="p-5">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
                       <CardTitle className="text-base font-semibold mb-1">{alert.message}</CardTitle>
                       <CardDescription className="text-sm font-medium">{alert.time}</CardDescription>
                     </div>
-                    <AlertTriangle className="h-5 w-5 text-red-600 flex-shrink-0 ml-3" />
+                    <AlertTriangle className="h-5 w-5 text-[#F43F5E] flex-shrink-0 ml-3" />
                   </div>
                 </CardHeader>
               </Card>
@@ -185,13 +185,13 @@ export default function HomePage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.2 }}
         >
-          <Card className="rounded-2xl">
+          <Card className="rounded-2xl border-2 border-slate-100 dark:border-slate-800 shadow-sm">
             <CardHeader className="p-6">
-              <CardTitle className="text-lg mb-2">{t('home.safeRoutes')}</CardTitle>
+              <CardTitle className="text-lg mb-2 font-bold">{t('home.safeRoutes')}</CardTitle>
               <CardDescription className="text-sm font-medium">{t('home.recommendedPaths')}</CardDescription>
             </CardHeader>
             <CardContent className="p-6 pt-0">
-              <Button variant="outline" size="lg" className="w-full h-14" onClick={() => router.push('/map')}>
+              <Button variant="outline" size="lg" className="w-full h-14 rounded-xl border-2 hover:bg-[#1D4ED8] hover:text-white hover:border-[#1D4ED8] transition-all" onClick={() => router.push('/map')}>
                 {t('home.viewRoutes')}
               </Button>
             </CardContent>
