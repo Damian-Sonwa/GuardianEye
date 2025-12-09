@@ -42,7 +42,7 @@ const roleRoutes: Record<string, UserRole[]> = {
 }
 
 // Public routes that don't require authentication
-const publicRoutes = ['/auth', '/login', '/register', '/verify-email', '/unauthorized', '/security/verify']
+const publicRoutes = ['/', '/auth', '/login', '/register', '/verify-email', '/unauthorized', '/security/verify']
 
 // Check security verification status
 async function checkSecurityVerification(router: any, pathname: string) {
@@ -108,7 +108,7 @@ export function RoleRouter({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const checkAuthAndRole = async () => {
-      // Skip check for public routes
+      // Skip check for public routes (including landing page)
       if (publicRoutes.includes(pathname)) {
         setIsChecking(false)
         return
