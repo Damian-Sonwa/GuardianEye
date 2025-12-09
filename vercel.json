@@ -4,7 +4,6 @@
   "outputDirectory": "apps/frontend/.next",
   "installCommand": "npm install",
   "framework": "nextjs",
-  "rootDirectory": "apps/frontend",
   "rewrites": [
     {
       "source": "/api/(.*)",
