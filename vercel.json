@@ -1,7 +1,7 @@
 {
-  "buildCommand": "npm install --prefix ../.. && npm install && npm run build",
+  "buildCommand": "npm install --prefix ../.. && NODE_ENV=development npm install && npm run build",
   "outputDirectory": ".next",
-  "installCommand": "npm install --prefix ../.. && npm install",
+  "installCommand": "npm install --prefix ../.. && NODE_ENV=development npm install",
   "framework": "nextjs"
 }
 
