@@ -18,8 +18,8 @@ services:
       #   sync: false
       # - key: JWT_SECRET
       #   sync: false
-      # - key: FRONTEND_URL
-      #   sync: false
+      - key: FRONTEND_URL
+        value: https://guardian-eye.vercel.app
     healthCheckPath: /health
     # Database migrations will run automatically on deploy
     # Make sure to set DIRECT_URL for migrations
