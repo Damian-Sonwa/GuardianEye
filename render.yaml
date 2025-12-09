@@ -1,0 +1,26 @@
+services:
+  # Backend API Service
+  - type: web
+    name: security-app-api
+    env: node
+    plan: starter
+    buildCommand: cd apps/api && npm install && npm run build
+    startCommand: cd apps/api && npm run start:prod
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3001
+      # Add your environment variables here or in Render dashboard:
+      # - key: DATABASE_URL
+      #   sync: false
+      # - key: DIRECT_URL
+      #   sync: false
+      # - key: JWT_SECRET
+      #   sync: false
+      # - key: FRONTEND_URL
+      #   sync: false
+    healthCheckPath: /health
+    # Database migrations will run automatically on deploy
+    # Make sure to set DIRECT_URL for migrations
+

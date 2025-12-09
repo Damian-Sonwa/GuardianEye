@@ -1,0 +1,184 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum UserRole {
+  USER
+  COMMUNITY_ADMIN
+  SECURITY_OFFICER
+  SUPER_ADMIN
+}
+
+model User {
+  id                    String   @id @default(cuid())
+  email                 String   @unique
+  name                  String?
+  passwordHash          String?
+  googleId              String?  @unique
+  deviceFingerprint     String?  @unique
+  pinHash               String?
+  role                  UserRole @default(USER)
+  tokenVersion          Int      @default(1) // Incremented when role changes to invalidate old tokens
+  emailVerified         Boolean  @default(false)
+  emailVerificationToken String? @unique
+  emailVerificationExpiry DateTime?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  reports              Report[]
+  panicAlerts         PanicAlert[]
+  cases               Case[]
+  securityVerification SecurityVerification?
+}
+
+model Report {
+  id          String   @id @default(cuid())
+  description String
+  location    Json?    // { lat: number, lng: number }
+  mediaUrl    String?
+  mediaType   String?  // photo, video, audio
+  riskLevel   String?  // low, medium, high
+  anonymous   Boolean  @default(true)
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  cases       Case[]
+
+  @@index([createdAt])
+  @@index([riskLevel])
+}
+
+model PanicAlert {
+  id        String   @id @default(cuid())
+  location  Json?    // { lat: number, lng: number }
+  audioUrl  String?
+  smsSent   Boolean  @default(false)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+}
+
+model Case {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  status      String   @default("open") // open, in_progress, closed
+  priority    String   @default("medium") // low, medium, high, urgent
+  assignedTo  String?
+  officer     User?    @relation(fields: [assignedTo], references: [id])
+  reports     Report[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([status])
+  @@index([priority])
+}
+
+model Suspect {
+  id          String   @id @default(cuid())
+  name        String?
+  alias       String?
+  faceEmbedding Json?  // Vector embedding for face recognition
+  photoUrl    String?
+  notes       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([name])
+}
+
+model ActivityLog {
+  id        String   @id @default(cuid())
+  action    String
+  entity    String   // report, case, suspect, etc.
+  entityId  String
+  userId    String?
+  metadata  Json?
+  createdAt DateTime @default(now())
+
+  @@index([createdAt])
+  @@index([entity, entityId])
+}
+
+model InvitationCode {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  role        UserRole @default(SECURITY_OFFICER)
+  used        Boolean  @default(false)
+  usedBy      String?
+  usedAt      DateTime?
+  expiresAt   DateTime?
+  createdAt   DateTime @default(now())
+  createdBy  String?  // Admin who created it
+
+  @@index([code])
+  @@index([used])
+}
+
+model SecurityVerification {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  // Personal Details
+  fullName        String?  // Full legal name
+  phoneNumber     String?  // Contact phone number
+  address         String?  // Residential/Office address
+  dateOfBirth     DateTime? // Date of birth
+  
+  // Identity documents
+  idCardUrl       String?  // National ID card (legacy)
+  idCardFront     String?  // Security ID card front image
+  idCardBack      String?  // Security ID card back image
+  securityIdNumber String? // Official Security ID number
+  workIdUrl       String?  // Work ID card
+  policeIdUrl     String?  // Police ID
+  badgeNumber     String?  // Security badge number
+  organization    String?  // Security organization name
+  department      String?  // Department/Unit name
+  licenseNumber   String?  // Professional license number
+  licenseUrl      String?  // License document URL
+  selfieImage     String?  // Live selfie for identity verification
+  verificationQuestions Json? // Verification Q&A responses
+  
+  // Professional Details
+  yearsOfExperience Int?   // Years of experience
+  rank              String? // Rank/Position
+  certificateUrl    String? // Professional certificate
+  trainingCertUrl   String? // Training certificate
+  
+  // Additional Evidence
+  additionalDocs   Json?   // Array of additional document URLs with metadata
+  references       Json?   // References with contact info
+  previousEmployer String? // Previous employer information
+  
+  // Verification status
+  status          String   @default("pending") // pending, approved, rejected
+  verifiedBy      String?  // Admin who verified
+  verifiedAt      DateTime?
+  rejectionReason String?
+  
+  // Additional info
+  notes           String?  // Admin notes
+  documents       Json?    // Additional documents metadata (legacy)
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([status])
+  @@index([userId])
+}
+

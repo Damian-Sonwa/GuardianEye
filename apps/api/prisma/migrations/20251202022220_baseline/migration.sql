@@ -1,0 +1,2 @@
+-- Baseline migration: Database already contains these tables
+-- This migration is marked as applied to sync Prisma with existing database state
