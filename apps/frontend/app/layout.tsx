@@ -10,13 +10,16 @@ import { TokenValidatorProvider } from '@/components/token-validator-provider'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Security App - Stay Safe',
-  description: 'Community safety and security reporting app',
+  title: 'GuardianEye - Security Alerts Made Instant',
+  description: 'Real-time alerts, live tracking, and emergency response in one powerful app. GuardianEye provides instant security notifications and peace of mind.',
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'default',
-    title: 'Security App',
+    title: 'GuardianEye',
+  },
+  other: {
+    'mobile-web-app-capable': 'yes',
   },
 }
 
@@ -36,8 +39,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="icon" href="/favicon.ico" />
-        <link rel="apple-touch-icon" href="/icon-192x192.png" />
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/icon.svg" />
+        <meta name="mobile-web-app-capable" content="yes" />
       </head>
       <body className={inter.className}>
         <ThemeProvider
