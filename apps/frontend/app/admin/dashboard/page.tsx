@@ -18,7 +18,6 @@ import {
   Loader2,
   LogOut,
   LayoutDashboard,
-  User,
   Home
 } from 'lucide-react'
 import { useRoleGuard } from '@/lib/role-guard'
@@ -45,7 +44,6 @@ export default function AdminDashboardPage() {
         return
       }
 
-      // Show UI immediately, load analytics in background
       setLoadingAnalytics(true)
 
       const response = await fetch('/api/analytics', {
@@ -66,19 +64,21 @@ export default function AdminDashboardPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background pb-20">
-      <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur">
+    <div className="flex min-h-screen flex-col bg-[#F8FAFC]">
+      <header className="sticky top-0 z-10 border-b border-slate-200/50 bg-white/80 backdrop-blur-md shadow-sm">
         <div className="flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" onClick={() => router.back()} className="active:scale-95">
-              <ArrowLeft className="h-5 w-5" />
+              <ArrowLeft className="h-5 w-5 text-[#0F172A]" />
             </Button>
-            <Shield className="h-6 w-6 text-[#1D4ED8] dark:text-blue-400" />
-            <h1 className="text-xl font-bold">Admin Dashboard</h1>
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2563EB] to-[#3B82F6] flex items-center justify-center">
+              <Shield className="h-6 w-6 text-white" />
+            </div>
+            <h1 className="text-xl font-bold text-[#0F172A]">Admin Dashboard</h1>
           </div>
           <div className="flex items-center gap-2">
             {/* Dashboard Switcher for Super Admin */}
-            <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-1">
+            <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-1">
               <Button
                 variant="ghost"
                 size="sm"
@@ -91,7 +91,7 @@ export default function AdminDashboardPage() {
                     window.location.href = '/home'
                   }
                 }}
-                className="h-8 px-3 text-xs active:scale-95 cursor-pointer"
+                className="h-8 px-3 text-xs active:scale-95 cursor-pointer hover:bg-slate-200"
                 title="User Dashboard"
               >
                 <Home className="h-4 w-4 mr-1" />
@@ -109,7 +109,7 @@ export default function AdminDashboardPage() {
                     window.location.href = '/security/dashboard'
                   }
                 }}
-                className="h-8 px-3 text-xs active:scale-95 cursor-pointer"
+                className="h-8 px-3 text-xs active:scale-95 cursor-pointer hover:bg-slate-200"
                 title="Security Dashboard"
               >
                 <Shield className="h-4 w-4 mr-1" />
@@ -118,7 +118,7 @@ export default function AdminDashboardPage() {
               <Button
                 variant="default"
                 size="sm"
-                className="h-8 px-3 text-xs active:scale-95 bg-[#1D4ED8] hover:bg-[#1E40AF]"
+                className="h-8 px-3 text-xs active:scale-95 bg-[#2563EB] hover:bg-[#1E40AF] text-white"
                 title="Admin Dashboard (Current)"
                 disabled
               >
@@ -130,10 +130,10 @@ export default function AdminDashboardPage() {
               variant="ghost"
               size="icon"
               onClick={logout}
-              className="h-10 w-10 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 active:scale-95"
+              className="h-10 w-10 rounded-xl hover:bg-slate-100 active:scale-95"
               title="Sign Out"
             >
-              <LogOut className="h-5 w-5" />
+              <LogOut className="h-5 w-5 text-[#0F172A]" />
             </Button>
           </div>
         </div>
@@ -142,93 +142,93 @@ export default function AdminDashboardPage() {
       <main className="flex-1 p-6 space-y-6">
         {/* Statistics Overview */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card className="rounded-2xl">
+          <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Total Reports</p>
+                  <p className="text-sm text-slate-600 mb-1">Total Reports</p>
                   {loadingAnalytics && !analytics ? (
                     <div className="flex items-center gap-2">
                       <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
                       <span className="text-sm text-slate-400">Loading...</span>
                     </div>
                   ) : (
-                    <p className="text-2xl font-bold text-slate-900 dark:text-slate-50">
+                    <p className="text-2xl font-bold text-[#0F172A]">
                       {analytics?.reports?.total || 0}
                     </p>
                   )}
                 </div>
-                <div className="p-3 rounded-xl bg-blue-100 dark:bg-blue-900/20">
-                  <FileText className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                <div className="p-3 rounded-xl bg-[#3B82F6]/10">
+                  <FileText className="h-6 w-6 text-[#3B82F6]" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="rounded-2xl">
+          <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Total Users</p>
+                  <p className="text-sm text-slate-600 mb-1">Total Users</p>
                   {loadingAnalytics && !analytics ? (
                     <div className="flex items-center gap-2">
                       <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
                       <span className="text-sm text-slate-400">Loading...</span>
                     </div>
                   ) : (
-                    <p className="text-2xl font-bold text-slate-900 dark:text-slate-50">
+                    <p className="text-2xl font-bold text-[#0F172A]">
                       {analytics?.users?.total || 0}
                     </p>
                   )}
                 </div>
-                <div className="p-3 rounded-xl bg-[#1D4ED8]/10 dark:bg-[#1D4ED8]/20">
-                  <Users className="h-6 w-6 text-[#1D4ED8] dark:text-blue-400" />
+                <div className="p-3 rounded-xl bg-[#2563EB]/10">
+                  <Users className="h-6 w-6 text-[#2563EB]" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="rounded-2xl">
+          <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Resolved Cases</p>
+                  <p className="text-sm text-slate-600 mb-1">Resolved Cases</p>
                   {loadingAnalytics && !analytics ? (
                     <div className="flex items-center gap-2">
                       <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
                       <span className="text-sm text-slate-400">Loading...</span>
                     </div>
                   ) : (
-                    <p className="text-2xl font-bold text-slate-900 dark:text-slate-50">
+                    <p className="text-2xl font-bold text-[#0F172A]">
                       {analytics?.cases?.resolved || 0}
                     </p>
                   )}
                 </div>
-                <div className="p-3 rounded-xl bg-green-100 dark:bg-green-900/20">
-                  <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400" />
+                <div className="p-3 rounded-xl bg-[#10B981]/10">
+                  <CheckCircle className="h-6 w-6 text-[#10B981]" />
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="rounded-2xl">
+          <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Pending Verifications</p>
+                  <p className="text-sm text-slate-600 mb-1">Pending Verifications</p>
                   {loadingAnalytics && !analytics ? (
                     <div className="flex items-center gap-2">
                       <Loader2 className="h-5 w-5 animate-spin text-slate-400" />
                       <span className="text-sm text-slate-400">Loading...</span>
                     </div>
                   ) : (
-                    <p className="text-2xl font-bold text-slate-900 dark:text-slate-50">
+                    <p className="text-2xl font-bold text-[#0F172A]">
                       {analytics?.verifications?.pending || 0}
                     </p>
                   )}
                 </div>
-                <div className="p-3 rounded-xl bg-amber-100 dark:bg-amber-900/20">
-                  <Clock className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+                <div className="p-3 rounded-xl bg-amber-100">
+                  <Clock className="h-6 w-6 text-amber-600" />
                 </div>
               </div>
             </CardContent>
@@ -237,136 +237,72 @@ export default function AdminDashboardPage() {
 
         {/* Management Tools */}
         <div>
-          <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-50 mb-4">Management Tools</h2>
+          <h2 className="text-xl font-bold text-[#0F172A] mb-4">Management Tools</h2>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
             <Card
-              className="cursor-pointer transition-all duration-200 hover:shadow-lg active:scale-95"
+              className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 active:scale-95 rounded-2xl border border-slate-200 bg-white"
               onClick={() => {
                 router.push('/admin/users')
               }}
             >
               <CardHeader className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-100 dark:bg-indigo-900/20">
-                  <Users className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#2563EB]/10">
+                  <Users className="h-6 w-6 text-[#2563EB]" />
                 </div>
-                <CardTitle className="text-lg">User Management</CardTitle>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                <CardTitle className="text-lg font-bold text-[#0F172A]">User Management</CardTitle>
+                <p className="text-sm text-slate-600 mt-1">
                   Manage users and assign roles
                 </p>
               </CardHeader>
             </Card>
 
             <Card
-              className="cursor-pointer transition-all duration-200 hover:shadow-lg active:scale-95"
+              className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 active:scale-95 rounded-2xl border border-slate-200 bg-white"
               onClick={() => router.push('/admin/security-verifications')}
             >
               <CardHeader className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 dark:bg-blue-900/20">
-                  <Shield className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#3B82F6]/10">
+                  <Shield className="h-6 w-6 text-[#3B82F6]" />
                 </div>
-                <CardTitle className="text-lg">Security Verifications</CardTitle>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                <CardTitle className="text-lg font-bold text-[#0F172A]">Security Verifications</CardTitle>
+                <p className="text-sm text-slate-600 mt-1">
                   Review and approve security officers
                 </p>
               </CardHeader>
             </Card>
 
             <Card
-              className="cursor-pointer transition-all duration-200 hover:shadow-lg active:scale-95"
+              className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 active:scale-95 rounded-2xl border border-slate-200 bg-white"
               onClick={() => router.push('/admin/analytics')}
             >
               <CardHeader className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-100 dark:bg-purple-900/20">
-                  <BarChart3 className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#2563EB]/10">
+                  <BarChart3 className="h-6 w-6 text-[#2563EB]" />
                 </div>
-                <CardTitle className="text-lg">Analytics</CardTitle>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
+                <CardTitle className="text-lg font-bold text-[#0F172A]">Analytics</CardTitle>
+                <p className="text-sm text-slate-600 mt-1">
                   View detailed analytics and reports
                 </p>
               </CardHeader>
             </Card>
 
             <Card
-              className="cursor-pointer transition-all duration-200 hover:shadow-lg active:scale-95"
+              className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 active:scale-95 rounded-2xl border border-slate-200 bg-white"
               onClick={() => router.push('/admin/generate-code')}
             >
               <CardHeader className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-violet-100 dark:bg-violet-900/20">
-                  <Shield className="h-6 w-6 text-violet-600 dark:text-violet-400" />
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#3B82F6]/10">
+                  <Shield className="h-6 w-6 text-[#3B82F6]" />
                 </div>
-                <CardTitle className="text-lg">Invitation Codes</CardTitle>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">
-                  Generate invitation codes
+                <CardTitle className="text-lg font-bold text-[#0F172A]">Generate Invitation Codes</CardTitle>
+                <p className="text-sm text-slate-600 mt-1">
+                  Create codes for security officers
                 </p>
               </CardHeader>
             </Card>
           </div>
         </div>
-
-        {/* Quick Stats */}
-        {analytics && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <Card className="rounded-2xl">
-              <CardHeader className="p-6">
-                <CardTitle className="text-lg mb-4">User Statistics</CardTitle>
-                <CardContent className="p-0 space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-600 dark:text-slate-400">Regular Users</span>
-                    <span className="font-semibold text-slate-900 dark:text-slate-50">
-                      {analytics.users?.regularUsers || 0}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-600 dark:text-slate-400">Security Officers</span>
-                    <span className="font-semibold text-slate-900 dark:text-slate-50">
-                      {analytics.users?.securityOfficers || 0}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-600 dark:text-slate-400">Admins</span>
-                    <span className="font-semibold text-slate-900 dark:text-slate-50">
-                      {analytics.users?.admins || 0}
-                    </span>
-                  </div>
-                </CardContent>
-              </CardHeader>
-            </Card>
-
-            <Card className="rounded-2xl">
-              <CardHeader className="p-6">
-                <CardTitle className="text-lg mb-4">Case Statistics</CardTitle>
-                <CardContent className="p-0 space-y-3">
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-600 dark:text-slate-400">Total Cases</span>
-                    <span className="font-semibold text-slate-900 dark:text-slate-50">
-                      {analytics.cases?.total || 0}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-600 dark:text-slate-400">Resolved</span>
-                    <span className="font-semibold text-emerald-600 dark:text-emerald-400">
-                      {analytics.cases?.resolved || 0}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-600 dark:text-slate-400">Unresolved</span>
-                    <span className="font-semibold text-amber-600 dark:text-amber-400">
-                      {analytics.cases?.unresolved || 0}
-                    </span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="text-slate-600 dark:text-slate-400">Resolution Rate</span>
-                    <span className="font-semibold text-slate-900 dark:text-slate-50">
-                      {analytics.cases?.resolutionRate?.toFixed(1) || 0}%
-                    </span>
-                  </div>
-                </CardContent>
-              </CardHeader>
-            </Card>
-          </div>
-        )}
       </main>
     </div>
   )
 }
-

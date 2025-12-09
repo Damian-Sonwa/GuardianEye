@@ -84,17 +84,19 @@ export default function SecurityDashboardPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-background pb-20">
+    <div className="flex min-h-screen flex-col bg-[#F8FAFC]">
       {/* Header */}
-      <header className="sticky top-0 z-10 border-b border-slate-200/50 bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/80 dark:border-slate-700/50 shadow-sm">
+      <header className="sticky top-0 z-10 border-b border-slate-200/50 bg-white/80 backdrop-blur-md shadow-sm">
         <div className="flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-3">
-            <Shield className="h-6 w-6 text-[#1D4ED8] dark:text-blue-400" />
-            <h1 className="text-xl font-bold text-slate-900 dark:text-slate-50">Security Dashboard</h1>
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2563EB] to-[#3B82F6] flex items-center justify-center">
+              <Shield className="h-6 w-6 text-white" />
+            </div>
+            <h1 className="text-xl font-bold text-[#0F172A]">Security Dashboard</h1>
           </div>
           <div className="flex items-center gap-2">
             {isSuperAdmin && (
-              <div className="flex items-center gap-1 bg-slate-100 dark:bg-slate-800 rounded-lg p-1 mr-2">
+              <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-1 mr-2">
                 <Button
                   variant="ghost"
                   size="sm"
@@ -103,7 +105,7 @@ export default function SecurityDashboardPage() {
                     e.stopPropagation()
                     router.replace('/home')
                   }}
-                  className="h-8 px-3 text-xs active:scale-95 cursor-pointer"
+                  className="h-8 px-3 text-xs active:scale-95 cursor-pointer hover:bg-slate-200"
                   title="User Dashboard"
                 >
                   <Home className="h-4 w-4 mr-1" />
@@ -112,7 +114,7 @@ export default function SecurityDashboardPage() {
                 <Button
                   variant="default"
                   size="sm"
-                  className="h-8 px-3 text-xs active:scale-95 bg-emerald-600 hover:bg-emerald-700"
+                  className="h-8 px-3 text-xs active:scale-95 bg-[#2563EB] hover:bg-[#1E40AF] text-white"
                   title="Security Dashboard (Current)"
                   disabled
                 >
@@ -127,7 +129,7 @@ export default function SecurityDashboardPage() {
                     e.stopPropagation()
                     router.replace('/admin/dashboard')
                   }}
-                  className="h-8 px-3 text-xs active:scale-95 cursor-pointer"
+                  className="h-8 px-3 text-xs active:scale-95 cursor-pointer hover:bg-slate-200"
                   title="Admin Dashboard"
                 >
                   <LayoutDashboard className="h-4 w-4 mr-1" />
@@ -139,9 +141,9 @@ export default function SecurityDashboardPage() {
               variant="ghost" 
               size="icon"
               onClick={() => router.push('/security/notifications')}
-              className="h-10 w-10 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="h-10 w-10 rounded-xl hover:bg-slate-100"
             >
-              <Bell className="h-5 w-5" />
+              <Bell className="h-5 w-5 text-[#0F172A]" />
             </Button>
             <Button 
               variant="ghost" 
@@ -150,26 +152,26 @@ export default function SecurityDashboardPage() {
                 const { logout } = require('@/lib/logout')
                 logout()
               }}
-              className="h-10 w-10 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800"
+              className="h-10 w-10 rounded-xl hover:bg-slate-100"
               title="Sign Out"
             >
-              <LogOut className="h-5 w-5" />
+              <LogOut className="h-5 w-5 text-[#0F172A]" />
             </Button>
           </div>
         </div>
       </header>
 
-      <main className="flex-1 space-y-8 p-6">
+      <main className="flex-1 space-y-6 p-6">
         {/* Welcome Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <h2 className="mb-2 text-2xl font-bold text-slate-900 dark:text-slate-50">
+          <h2 className="mb-2 text-2xl font-bold text-[#0F172A]">
             Welcome, {user?.name || 'Officer'}
           </h2>
-          <p className="text-slate-600 dark:text-slate-400">
+          <p className="text-slate-600">
             Manage incidents, review reports, and coordinate security operations
           </p>
         </motion.div>
@@ -180,96 +182,96 @@ export default function SecurityDashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, delay: 0.1 }}
         >
-          <h2 className="mb-6 text-xl font-semibold text-slate-900 dark:text-slate-50">Quick Actions</h2>
+          <h2 className="mb-4 text-xl font-bold text-[#0F172A]">Quick Actions</h2>
           <div className="grid grid-cols-2 gap-4">
             <Card
-              className="cursor-pointer transition-all duration-200 hover:shadow-lg"
+              className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 active:scale-95 rounded-2xl border border-slate-200 bg-white"
               onClick={() => router.push('/security/reports')}
             >
               <CardHeader className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 dark:bg-blue-900/20">
-                  <FileText className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#3B82F6]/10">
+                  <FileText className="h-6 w-6 text-[#3B82F6]" />
                 </div>
-                <CardTitle className="text-lg">Reports Dashboard</CardTitle>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">View and manage incident reports</p>
+                <CardTitle className="text-lg font-bold text-[#0F172A]">Reports Dashboard</CardTitle>
+                <p className="text-sm text-slate-600 mt-1">View and manage incident reports</p>
               </CardHeader>
             </Card>
 
             <Card
-              className="cursor-pointer transition-all duration-200 hover:shadow-lg"
+              className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 active:scale-95 rounded-2xl border border-slate-200 bg-white"
               onClick={() => router.push('/security/ai-match')}
             >
               <CardHeader className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-100 dark:bg-purple-900/20">
-                  <Brain className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#2563EB]/10">
+                  <Brain className="h-6 w-6 text-[#2563EB]" />
                 </div>
-                <CardTitle className="text-lg">AI Identity Match</CardTitle>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Match faces using AI recognition</p>
+                <CardTitle className="text-lg font-bold text-[#0F172A]">AI Identity Match</CardTitle>
+                <p className="text-sm text-slate-600 mt-1">Match faces using AI recognition</p>
               </CardHeader>
             </Card>
 
             <Card
-              className="cursor-pointer transition-all duration-200 hover:shadow-lg"
+              className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 active:scale-95 rounded-2xl border border-slate-200 bg-white"
               onClick={() => router.push('/security/heatmap')}
             >
               <CardHeader className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-red-100 dark:bg-red-900/20">
-                  <Map className="h-6 w-6 text-red-600 dark:text-red-400" />
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#EF4444]/10">
+                  <Map className="h-6 w-6 text-[#EF4444]" />
                 </div>
-                <CardTitle className="text-lg">Crime Heat Map</CardTitle>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Visualize crime hotspots</p>
+                <CardTitle className="text-lg font-bold text-[#0F172A]">Crime Heat Map</CardTitle>
+                <p className="text-sm text-slate-600 mt-1">Visualize crime hotspots</p>
               </CardHeader>
             </Card>
 
             <Card
-              className="cursor-pointer transition-all duration-200 hover:shadow-lg"
+              className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 active:scale-95 rounded-2xl border border-slate-200 bg-white"
               onClick={() => router.push('/security/prioritization')}
             >
               <CardHeader className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-100 dark:bg-amber-900/20">
-                  <AlertTriangle className="h-6 w-6 text-amber-600 dark:text-amber-400" />
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-amber-100">
+                  <AlertTriangle className="h-6 w-6 text-amber-600" />
                 </div>
-                <CardTitle className="text-lg">Prioritization</CardTitle>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Manage incident priorities</p>
+                <CardTitle className="text-lg font-bold text-[#0F172A]">Prioritization</CardTitle>
+                <p className="text-sm text-slate-600 mt-1">Manage incident priorities</p>
               </CardHeader>
             </Card>
 
             <Card
-              className="cursor-pointer transition-all duration-200 hover:shadow-lg"
+              className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 active:scale-95 rounded-2xl border border-slate-200 bg-white"
               onClick={() => router.push('/security/collaboration')}
             >
               <CardHeader className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 dark:bg-emerald-900/20">
-                  <Users className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#10B981]/10">
+                  <Users className="h-6 w-6 text-[#10B981]" />
                 </div>
-                <CardTitle className="text-lg">Collaboration</CardTitle>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Multi-agent coordination</p>
+                <CardTitle className="text-lg font-bold text-[#0F172A]">Collaboration</CardTitle>
+                <p className="text-sm text-slate-600 mt-1">Multi-agent coordination</p>
               </CardHeader>
             </Card>
 
             <Card
-              className="cursor-pointer transition-all duration-200 hover:shadow-lg"
+              className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 active:scale-95 rounded-2xl border border-slate-200 bg-white"
               onClick={() => router.push('/security/evidence')}
             >
               <CardHeader className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 dark:bg-slate-900/20">
-                  <Upload className="h-6 w-6 text-slate-600 dark:text-slate-400" />
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100">
+                  <Upload className="h-6 w-6 text-slate-600" />
                 </div>
-                <CardTitle className="text-lg">Evidence Upload</CardTitle>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Upload and manage evidence</p>
+                <CardTitle className="text-lg font-bold text-[#0F172A]">Evidence Upload</CardTitle>
+                <p className="text-sm text-slate-600 mt-1">Upload and manage evidence</p>
               </CardHeader>
             </Card>
 
             <Card
-              className="cursor-pointer transition-all duration-200 hover:shadow-lg"
+              className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 active:scale-95 rounded-2xl border border-slate-200 bg-white"
               onClick={() => router.push('/security/setup-pin')}
             >
               <CardHeader className="p-6">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-100 dark:bg-indigo-900/20">
-                  <Lock className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#2563EB]/10">
+                  <Lock className="h-6 w-6 text-[#2563EB]" />
                 </div>
-                <CardTitle className="text-lg">Setup PIN</CardTitle>
-                <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Set up a 4-digit PIN for quick login</p>
+                <CardTitle className="text-lg font-bold text-[#0F172A]">Setup PIN</CardTitle>
+                <p className="text-sm text-slate-600 mt-1">Set up a 4-digit PIN for quick login</p>
               </CardHeader>
             </Card>
           </div>
@@ -282,54 +284,54 @@ export default function SecurityDashboardPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, delay: 0.2 }}
           >
-            <h2 className="mb-6 text-xl font-semibold text-slate-900 dark:text-slate-50">Admin Tools</h2>
+            <h2 className="mb-4 text-xl font-bold text-[#0F172A]">Admin Tools</h2>
             <div className="grid grid-cols-2 gap-4">
               <Card
-                className="cursor-pointer transition-all duration-200 hover:shadow-lg"
+                className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 active:scale-95 rounded-2xl border border-slate-200 bg-white"
                 onClick={() => router.push('/admin/dashboard')}
               >
                 <CardHeader className="p-6">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-100 dark:bg-purple-900/20">
-                    <Shield className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#2563EB]/10">
+                    <Shield className="h-6 w-6 text-[#2563EB]" />
                   </div>
-                  <CardTitle className="text-lg">Admin Dashboard</CardTitle>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">System overview and management</p>
+                  <CardTitle className="text-lg font-bold text-[#0F172A]">Admin Dashboard</CardTitle>
+                  <p className="text-sm text-slate-600 mt-1">System overview and management</p>
                 </CardHeader>
               </Card>
               <Card
-                className="cursor-pointer transition-all duration-200 hover:shadow-lg"
+                className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 active:scale-95 rounded-2xl border border-slate-200 bg-white"
                 onClick={() => router.push('/admin/users')}
               >
                 <CardHeader className="p-6">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-100 dark:bg-indigo-900/20">
-                    <Users className="h-6 w-6 text-indigo-600 dark:text-indigo-400" />
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#3B82F6]/10">
+                    <Users className="h-6 w-6 text-[#3B82F6]" />
                   </div>
-                  <CardTitle className="text-lg">User Management</CardTitle>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Manage users and assign roles</p>
+                  <CardTitle className="text-lg font-bold text-[#0F172A]">User Management</CardTitle>
+                  <p className="text-sm text-slate-600 mt-1">Manage users and assign roles</p>
                 </CardHeader>
               </Card>
               <Card
-                className="cursor-pointer transition-all duration-200 hover:shadow-lg"
+                className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 active:scale-95 rounded-2xl border border-slate-200 bg-white"
                 onClick={() => router.push('/admin/security-verifications')}
               >
                 <CardHeader className="p-6">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 dark:bg-blue-900/20">
-                    <Shield className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#2563EB]/10">
+                    <Shield className="h-6 w-6 text-[#2563EB]" />
                   </div>
-                  <CardTitle className="text-lg">Security Verifications</CardTitle>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">Review and approve security officers</p>
+                  <CardTitle className="text-lg font-bold text-[#0F172A]">Security Verifications</CardTitle>
+                  <p className="text-sm text-slate-600 mt-1">Review and approve security officers</p>
                 </CardHeader>
               </Card>
               <Card
-                className="cursor-pointer transition-all duration-200 hover:shadow-lg"
+                className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-1 active:scale-95 rounded-2xl border border-slate-200 bg-white"
                 onClick={() => router.push('/admin/analytics')}
               >
                 <CardHeader className="p-6">
-                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-emerald-100 dark:bg-emerald-900/20">
-                    <BarChart3 className="h-6 w-6 text-emerald-600 dark:text-emerald-400" />
+                  <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#3B82F6]/10">
+                    <BarChart3 className="h-6 w-6 text-[#3B82F6]" />
                   </div>
-                  <CardTitle className="text-lg">Analytics</CardTitle>
-                  <p className="text-sm text-slate-600 dark:text-slate-400 mt-1">View detailed system analytics</p>
+                  <CardTitle className="text-lg font-bold text-[#0F172A]">Analytics</CardTitle>
+                  <p className="text-sm text-slate-600 mt-1">View detailed system analytics</p>
                 </CardHeader>
               </Card>
             </div>
@@ -339,5 +341,3 @@ export default function SecurityDashboardPage() {
     </div>
   )
 }
-
-

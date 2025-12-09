@@ -2,10 +2,9 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@security-app/ui'
-import { Fingerprint, Mail, LogIn, Eye, EyeOff, User, Shield, UserPlus } from 'lucide-react'
+import { Fingerprint, Mail, LogIn, Eye, EyeOff, User, Shield, UserPlus, Lock, ArrowRight } from 'lucide-react'
 import {
   isBiometricAvailable,
   getBiometricType,
@@ -13,22 +12,6 @@ import {
   getStoredCredentialId,
 } from '@/lib/webauthn'
 import { getAuthToken, storeAuthToken, storeUserData, getUserData, isAuthenticated, refreshUserData } from '@/lib/auth-storage'
-
-// Photography-style background images from local assets
-const backgroundImages = [
-  {
-    url: '/images/StockCake-villagers_Images_and_Photos_1764630710.jpg',
-    alt: 'Rural African villagers',
-  },
-  {
-    url: '/images/StockCake-security_personnels_with_map_Images_and_Photos_1764630771.jpg',
-    alt: 'Security personnel with map',
-  },
-  {
-    url: '/images/StockCake-security_emergency_Images_and_Photos_1764630511.jpg',
-    alt: 'Security emergency response',
-  },
-] as const
 
 type AuthMode = 'login' | 'signup'
 
@@ -49,7 +32,6 @@ export default function AuthPage() {
       const message = params.get('message')
       if (message === 'role-updated') {
         alert('Your role has been updated. Please log in again to access new features.')
-        // Clean up URL
         window.history.replaceState({}, '', '/auth')
       }
     }
@@ -74,14 +56,11 @@ export default function AuthPage() {
   const [biometricAvailable, setBiometricAvailable] = useState(false)
   const [biometricType, setBiometricType] = useState('Biometric')
   const [showBiometricPrompt, setShowBiometricPrompt] = useState(false)
-  const [currentImageIndex, setCurrentImageIndex] = useState(0)
 
-  // Redirect if already authenticated (but only if user is actually logged in, not just after logout)
+  // Redirect if already authenticated
   useEffect(() => {
-    // Small delay to ensure logout has cleared data
     const timer = setTimeout(async () => {
       if (isAuthenticated()) {
-        // Refresh user data from backend to get latest role
         const userData = await refreshUserData()
         if (!userData) {
           return
@@ -92,8 +71,6 @@ export default function AuthPage() {
         if (userRole === 'SUPER_ADMIN') {
           router.replace('/admin/dashboard')
         } else if (userRole === 'SECURITY_OFFICER') {
-          // Only check verification if user is actually authenticated
-          // Don't redirect to verification if they just logged out
           checkSecurityVerificationAndRedirect()
         } else {
           router.replace('/home')
@@ -108,7 +85,6 @@ export default function AuthPage() {
     try {
       const token = getAuthToken()
       if (!token) {
-        // No token means user logged out, don't redirect to verification
         setIsLoading(false)
         return
       }
@@ -124,20 +100,15 @@ export default function AuthPage() {
         if (data && data.status === 'approved') {
           router.replace('/security/dashboard')
         } else {
-          // Only redirect to verification if user is actually trying to access security features
-          // Not if they just logged out
           router.replace('/security/verify')
         }
-        // Set a timeout to clear loading if navigation doesn't happen within 2 seconds
         setTimeout(() => {
           setIsLoading(false)
         }, 2000)
       } else if (response.status === 401) {
-        // Unauthorized - user is not authenticated, don't redirect to verification
         setIsLoading(false)
         return
       } else {
-        // Other error - only redirect if we have a valid token
         if (token) {
           router.replace('/security/verify')
           setTimeout(() => {
@@ -149,7 +120,6 @@ export default function AuthPage() {
       }
     } catch (error) {
       console.error('Error checking verification:', error)
-      // On error, don't redirect to verification if user just logged out
       const token = getAuthToken()
       if (token) {
         router.replace('/security/verify')
@@ -182,7 +152,6 @@ export default function AuthPage() {
         if (data.user) {
           storeUserData(data.user)
           
-          // Check if security personnel needs verification
           if (data.user.role === 'SECURITY_OFFICER') {
             try {
               const verifyResponse = await fetch('/api/security-verification/status', {
@@ -209,20 +178,13 @@ export default function AuthPage() {
           }
         }
         
-        // Redirect based on role - keep loading until navigation
         if (data.user?.role === 'SUPER_ADMIN') {
           router.replace('/admin/dashboard')
-          // Keep loading state active during navigation
-          // It will be cleared when the new page loads
         } else if (data.user?.role === 'SECURITY_OFFICER') {
           router.replace('/security/dashboard')
-          // Keep loading state active during navigation
         } else {
           router.replace('/home')
-          // Keep loading state active during navigation
         }
-        // Don't clear loading immediately - let the router handle navigation
-        // The loading state will persist until the new page renders
       } else {
         setIsLoading(false)
         alert('Invalid email or password')
@@ -277,19 +239,15 @@ export default function AuthPage() {
       if (response.ok) {
         const data = isJson ? await response.json() : {}
         
-        // If security personnel, auto-login and redirect to verification
         if (selectedRole === 'SECURITY_OFFICER' && data.access_token) {
           storeAuthToken(data.access_token)
           if (data.user) {
             storeUserData(data.user)
           }
           router.replace('/security/verify')
-          // Keep loading state until navigation completes
-          // Don't clear loading - let router handle it
           return
         }
         
-        // For regular users, show success message and switch to login
         setIsLoading(false)
         if (data.emailSent) {
           alert('Registration successful! Please check your email to verify your account before signing in.')
@@ -309,7 +267,6 @@ export default function AuthPage() {
       alert('Registration failed. Please check your connection and try again.')
     }
   }
-
 
   const handleBiometricAuth = async () => {
     setIsLoading(true)
@@ -362,7 +319,6 @@ export default function AuthPage() {
             storeUserData(data.user)
           }
           
-          // Redirect based on role - keep loading until navigation
           if (data.user?.role === 'SUPER_ADMIN') {
             router.replace('/admin/dashboard')
           } else if (data.user?.role === 'SECURITY_OFFICER') {
@@ -370,7 +326,6 @@ export default function AuthPage() {
           } else {
             router.replace('/home')
           }
-          // Set a timeout to clear loading if navigation doesn't happen within 2 seconds
           setTimeout(() => {
             setIsLoading(false)
           }, 2000)
@@ -387,15 +342,6 @@ export default function AuthPage() {
       }
     }
   }
-
-  // Background image rotation effect
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prev) => (prev + 1) % backgroundImages.length)
-    }, 7000)
-
-    return () => clearInterval(interval)
-  }, [])
 
   // Check biometric availability
   useEffect(() => {
@@ -420,167 +366,125 @@ export default function AuthPage() {
   }, [])
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center p-4 relative overflow-hidden">
-      {/* Photography-style background images with flip animation */}
-      <div className="absolute inset-0 overflow-hidden">
-        <AnimatePresence mode="wait">
-          {backgroundImages.map((image, index) => {
-            if (index !== currentImageIndex) return null
-            return (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 1.1 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 1.2, ease: 'easeInOut' }}
-                className="absolute inset-0"
-              >
-                <img
-                  src={image.url}
-                  alt={image.alt}
-                  className="w-full h-full object-cover"
-                  loading={index === 0 ? 'eager' : 'lazy'}
-                />
-              </motion.div>
-            )
-          })}
-        </AnimatePresence>
-        
-        {/* Semi-transparent overlay for readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0F172A]/80 via-[#1D4ED8]/60 to-[#0F172A]/80"></div>
-        <div className="absolute inset-0 bg-black/20"></div>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-[#F8FAFC] via-[#DBEAFE] to-[#F8FAFC]">
+      {/* Soft background pattern */}
+      <div className="absolute inset-0 opacity-30">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-[#2563EB]/5 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#3B82F6]/5 rounded-full blur-3xl"></div>
       </div>
-      
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: 'easeOut' }}
+        transition={{ duration: 0.5 }}
         className="w-full max-w-md relative z-10"
       >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5, delay: 0.2, ease: 'easeOut' }}
-          className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl p-8 shadow-[0_20px_60px_rgba(0,0,0,0.4)] border border-white/40 dark:border-white/20"
-        >
-          {/* Mode Tabs */}
-          <div className="flex gap-2 mb-6 p-1 bg-slate-100 dark:bg-slate-800 rounded-xl">
-            <button
-              type="button"
-              onClick={() => setMode('login')}
-              className={`flex-1 py-2 px-4 rounded-lg text-sm font-semibold transition-all ${
-                mode === 'login'
-                  ? 'bg-white dark:bg-slate-700 text-[#1D4ED8] dark:text-blue-400 shadow-sm'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-              }`}
-            >
-              <LogIn className="inline-block mr-2 h-4 w-4" />
-              Sign In
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode('signup')}
-              className={`flex-1 py-2 px-4 rounded-lg text-sm font-semibold transition-all ${
-                mode === 'signup'
-                  ? 'bg-white dark:bg-slate-700 text-[#1D4ED8] dark:text-blue-400 shadow-sm'
-                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-              }`}
-            >
-              <UserPlus className="inline-block mr-2 h-4 w-4" />
-              Sign Up
-            </button>
+        {/* Auth Card */}
+        <div className="bg-white rounded-2xl shadow-xl border border-slate-200/50 overflow-hidden">
+          {/* Header with Branding */}
+          <div className="bg-gradient-to-r from-[#2563EB] to-[#3B82F6] p-8 text-center">
+            <div className="inline-flex items-center justify-center w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl mb-4">
+              <Shield className="h-8 w-8 text-white" />
+            </div>
+            <h1 className="text-2xl font-bold text-white mb-2">GuardianEye</h1>
+            <p className="text-sm text-white/90">Security Alerts Made Instant</p>
           </div>
 
-          {/* Header */}
-          <div className="text-center mb-8">
-            <motion.div
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              transition={{ duration: 0.3, delay: 0.2 }}
-              className="mb-6"
-            >
-              <div className="mx-auto w-16 h-16 rounded-2xl bg-[#1D4ED8]/10 dark:bg-[#1D4ED8]/20 backdrop-blur-sm flex items-center justify-center mb-4 border border-[#1D4ED8]/20 dark:border-[#1D4ED8]/30">
-                {mode === 'login' ? (
-                  <LogIn className="h-8 w-8 text-[#1D4ED8] dark:text-blue-400" />
-                ) : (
-                  <UserPlus className="h-8 w-8 text-[#1D4ED8] dark:text-blue-400" />
-                )}
-              </div>
-            </motion.div>
-            <h1 className="text-[28px] font-bold text-slate-900 dark:text-slate-50 mb-2 leading-[120%]">
-              {mode === 'login' ? 'Welcome back' : 'Create Account'}
-            </h1>
-            <p className="text-base font-medium text-slate-700 dark:text-slate-300">
-              {mode === 'login' ? 'Securely sign in to your account' : 'Sign up to get started'}
-            </p>
-          </div>
-
-          {/* Biometric Prompt Modal */}
-          <AnimatePresence>
-            {showBiometricPrompt && biometricAvailable && mode === 'login' && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
-                onClick={() => setShowBiometricPrompt(false)}
+          <div className="p-8">
+            {/* Mode Tabs */}
+            <div className="flex gap-2 mb-8 p-1 bg-slate-100 rounded-xl">
+              <button
+                type="button"
+                onClick={() => setMode('login')}
+                className={`flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all ${
+                  mode === 'login'
+                    ? 'bg-white text-[#2563EB] shadow-sm'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
               >
+                <LogIn className="inline-block mr-2 h-4 w-4" />
+                Sign In
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode('signup')}
+                className={`flex-1 py-3 px-4 rounded-lg text-sm font-semibold transition-all ${
+                  mode === 'signup'
+                    ? 'bg-white text-[#2563EB] shadow-sm'
+                    : 'text-slate-600 hover:text-slate-900'
+                }`}
+              >
+                <UserPlus className="inline-block mr-2 h-4 w-4" />
+                Sign Up
+              </button>
+            </div>
+
+            {/* Biometric Prompt Modal */}
+            <AnimatePresence>
+              {showBiometricPrompt && biometricAvailable && mode === 'login' && (
                 <motion.div
-                  initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  exit={{ scale: 0.9, opacity: 0 }}
-                  onClick={(e) => e.stopPropagation()}
-                  className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl p-8 max-w-sm w-full mx-4 border border-white/30 shadow-2xl"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
+                  onClick={() => setShowBiometricPrompt(false)}
                 >
-                  <div className="text-center mb-6">
-                    <div className="mx-auto w-16 h-16 rounded-full bg-[#1D4ED8]/10 dark:bg-[#1D4ED8]/20 flex items-center justify-center mb-4">
-                      <Fingerprint className="h-8 w-8 text-[#1D4ED8] dark:text-blue-400" />
+                  <motion.div
+                    initial={{ scale: 0.9, opacity: 0 }}
+                    animate={{ scale: 1, opacity: 1 }}
+                    exit={{ scale: 0.9, opacity: 0 }}
+                    onClick={(e) => e.stopPropagation()}
+                    className="bg-white rounded-2xl p-8 max-w-sm w-full mx-4 border border-slate-200 shadow-2xl"
+                  >
+                    <div className="text-center mb-6">
+                      <div className="mx-auto w-16 h-16 rounded-full bg-[#DBEAFE] flex items-center justify-center mb-4">
+                        <Fingerprint className="h-8 w-8 text-[#2563EB]" />
+                      </div>
+                      <h3 className="text-xl font-bold text-[#0F172A] mb-2">
+                        Confirm {biometricType}
+                      </h3>
+                      <p className="text-sm text-slate-600">
+                        Use {biometricType.toLowerCase()} to sign in to your account
+                      </p>
                     </div>
-                    <h3 className="text-xl font-bold text-slate-900 dark:text-slate-50 mb-2">
-                      Confirm {biometricType}
-                    </h3>
-                    <p className="text-sm text-slate-600 dark:text-slate-400">
-                      Use {biometricType.toLowerCase()} to sign in to your account
-                    </p>
-                  </div>
-                  
-                  <div className="flex gap-3">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setShowBiometricPrompt(false)}
-                      className="flex-1"
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      type="button"
-                      onClick={handleBiometricAuth}
-                      disabled={isLoading}
-                      className="flex-1 bg-[#1D4ED8] hover:bg-[#1E40AF]"
-                    >
-                      {isLoading ? 'Authenticating...' : 'Continue'}
-                    </Button>
-                  </div>
+                    
+                    <div className="flex gap-3">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setShowBiometricPrompt(false)}
+                        className="flex-1"
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={handleBiometricAuth}
+                        disabled={isLoading}
+                        className="flex-1 bg-[#2563EB] hover:bg-[#1E40AF] text-white"
+                      >
+                        {isLoading ? 'Authenticating...' : 'Continue'}
+                      </Button>
+                    </div>
+                  </motion.div>
                 </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+              )}
+            </AnimatePresence>
 
-          {/* Forms */}
-          <AnimatePresence mode="wait">
-            {mode === 'login' ? (
-              <motion.div
-                key="login"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.3 }}
-              >
-                <form onSubmit={handleEmailLogin} className="space-y-6">
-                  <div className="space-y-4">
+            {/* Forms */}
+            <AnimatePresence mode="wait">
+              {mode === 'login' ? (
+                <motion.div
+                  key="login"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <form onSubmit={handleEmailLogin} className="space-y-5">
                     <div className="space-y-2">
-                      <label htmlFor="email" className="text-sm font-semibold text-slate-900 dark:text-slate-50">
+                      <label htmlFor="email" className="text-sm font-semibold text-[#0F172A] flex items-center gap-2">
+                        <Mail className="h-4 w-4 text-[#2563EB]" />
                         Email
                       </label>
                       <input
@@ -590,12 +494,13 @@ export default function AuthPage() {
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="your@email.com"
                         required
-                        className="w-full h-14 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 text-base font-medium text-slate-900 dark:text-slate-50 placeholder:text-slate-500 transition-all focus:border-[#1D4ED8] focus:ring-4 focus:ring-[#1D4ED8]/20"
+                        className="w-full h-12 rounded-xl border-2 border-slate-200 bg-white px-4 text-base text-[#0F172A] placeholder:text-slate-400 transition-all focus:border-[#2563EB] focus:ring-4 focus:ring-[#2563EB]/10"
                       />
                     </div>
 
                     <div className="space-y-2">
-                      <label htmlFor="password" className="text-sm font-semibold text-slate-900 dark:text-slate-50">
+                      <label htmlFor="password" className="text-sm font-semibold text-[#0F172A] flex items-center gap-2">
+                        <Lock className="h-4 w-4 text-[#2563EB]" />
                         Password
                       </label>
                       <div className="relative">
@@ -606,12 +511,12 @@ export default function AuthPage() {
                           onChange={(e) => setPassword(e.target.value)}
                           placeholder="Enter your password"
                           required
-                          className="w-full h-14 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 pr-12 text-base font-medium text-slate-900 dark:text-slate-50 placeholder:text-slate-500 transition-all focus:border-[#1D4ED8] focus:ring-4 focus:ring-[#1D4ED8]/20"
+                          className="w-full h-12 rounded-xl border-2 border-slate-200 bg-white px-4 pr-12 text-base text-[#0F172A] placeholder:text-slate-400 transition-all focus:border-[#2563EB] focus:ring-4 focus:ring-[#2563EB]/10"
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#0F172A]"
                         >
                           {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                         </button>
@@ -621,7 +526,7 @@ export default function AuthPage() {
                     <Button
                       type="submit"
                       size="lg"
-                      className="w-full h-14 bg-[#1D4ED8] hover:bg-[#1E40AF] text-white shadow-lg"
+                      className="w-full h-12 bg-[#2563EB] hover:bg-[#1E40AF] text-white shadow-lg rounded-xl font-semibold"
                       disabled={isLoading || !email || !password}
                     >
                       {isLoading ? (
@@ -631,232 +536,218 @@ export default function AuthPage() {
                         </>
                       ) : (
                         <>
-                          <LogIn className="mr-2 h-5 w-5" />
                           Sign In
+                          <ArrowRight className="ml-2 h-5 w-5" />
                         </>
                       )}
                     </Button>
-                  </div>
+                  </form>
 
-                  <div className="relative my-6">
-                    <div className="absolute inset-0 flex items-center">
-                      <div className="w-full border-t border-slate-200 dark:border-slate-700"></div>
-                    </div>
-                    <div className="relative flex justify-center text-sm">
-                      <span className="bg-white dark:bg-slate-900 px-4 text-slate-700 dark:text-slate-300">or continue with</span>
-                    </div>
-                  </div>
+                  {biometricAvailable && (
+                    <>
+                      <div className="relative my-6">
+                        <div className="absolute inset-0 flex items-center">
+                          <div className="w-full border-t border-slate-200"></div>
+                        </div>
+                        <div className="relative flex justify-center text-sm">
+                          <span className="bg-white px-4 text-slate-500">or continue with</span>
+                        </div>
+                      </div>
 
-                  <div className={`grid gap-3 ${biometricAvailable ? 'grid-cols-2' : 'grid-cols-1'}`}>
-                    <Button
-                      type="button"
-                      size="lg"
-                      variant="outline"
-                      onClick={() => {}}
-                      disabled={isLoading}
-                      className="w-full h-14"
-                    >
-                      <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
-                        <path fill="currentColor" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                        <path fill="currentColor" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                        <path fill="currentColor" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
-                        <path fill="currentColor" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" />
-                      </svg>
-                      Google
-                    </Button>
-
-                    {biometricAvailable && (
                       <Button
                         type="button"
                         size="lg"
                         variant="outline"
                         onClick={handleBiometricAuth}
                         disabled={isLoading}
-                        className="w-full h-14"
+                        className="w-full h-12 rounded-xl border-2 border-slate-200 hover:bg-slate-50"
                       >
                         <Fingerprint className="mr-2 h-5 w-5" />
                         {biometricType}
                       </Button>
-                    )}
-                  </div>
-                </form>
-              </motion.div>
-            ) : (
-              <motion.div
-                key="signup"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.3 }}
-              >
-                <form onSubmit={handleSignup} className="space-y-4">
-                  <div className="space-y-2">
-                    <label htmlFor="name" className="text-sm font-semibold text-slate-900 dark:text-slate-50">
-                      Full Name
-                    </label>
-                    <input
-                      id="name"
-                      type="text"
-                      value={name}
-                      onChange={(e) => setName(e.target.value)}
-                      placeholder="John Doe"
-                      required
-                      className="w-full h-14 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 text-base font-medium text-slate-900 dark:text-slate-50 placeholder:text-slate-500 transition-all focus:border-[#1D4ED8] focus:ring-4 focus:ring-[#1D4ED8]/20"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label htmlFor="signupEmail" className="text-sm font-semibold text-slate-900 dark:text-slate-50">
-                      Email
-                    </label>
-                    <input
-                      id="signupEmail"
-                      type="email"
-                      value={signupEmail}
-                      onChange={(e) => setSignupEmail(e.target.value)}
-                      placeholder="your@email.com"
-                      required
-                      className="w-full h-14 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 text-base font-medium text-slate-900 dark:text-slate-50 placeholder:text-slate-500 transition-all focus:border-[#1D4ED8] focus:ring-4 focus:ring-[#1D4ED8]/20"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <label htmlFor="signupPassword" className="text-sm font-semibold text-slate-900 dark:text-slate-50">
-                      Password
-                    </label>
-                    <div className="relative">
-                      <input
-                        id="signupPassword"
-                        type={showSignupPassword ? 'text' : 'password'}
-                        value={signupPassword}
-                        onChange={(e) => setSignupPassword(e.target.value)}
-                        placeholder="Create a password"
-                        required
-                        minLength={6}
-                        className="w-full h-14 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 pr-12 text-base font-medium text-slate-900 dark:text-slate-50 placeholder:text-slate-500 transition-all focus:border-[#1D4ED8] focus:ring-4 focus:ring-[#1D4ED8]/20"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowSignupPassword(!showSignupPassword)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
-                      >
-                        {showSignupPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="space-y-2">
-                    <label htmlFor="confirmPassword" className="text-sm font-semibold text-slate-900 dark:text-slate-50">
-                      Confirm Password
-                    </label>
-                    <div className="relative">
-                      <input
-                        id="confirmPassword"
-                        type={showConfirmPassword ? 'text' : 'password'}
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                        placeholder="Confirm your password"
-                        required
-                        minLength={6}
-                        className="w-full h-14 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 pr-12 text-base font-medium text-slate-900 dark:text-slate-50 placeholder:text-slate-500 transition-all focus:border-[#1D4ED8] focus:ring-4 focus:ring-[#1D4ED8]/20"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                        className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
-                      >
-                        {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Role Selection */}
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold text-slate-900 dark:text-slate-50">
-                      Select Your Role
-                    </label>
-                    <div className="grid grid-cols-2 gap-3">
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setSelectedRole('USER')
-                          setInvitationCode('')
-                        }}
-                        className={`h-14 rounded-xl border-2 transition-all ${
-                          selectedRole === 'USER'
-                            ? 'border-[#1D4ED8] bg-[#1D4ED8]/10 dark:bg-[#1D4ED8]/20'
-                            : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800'
-                        }`}
-                      >
-                        <User className="h-5 w-5 mx-auto mb-1" />
-                        <span className="text-sm font-medium">User</span>
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setSelectedRole('SECURITY_OFFICER')}
-                        className={`h-14 rounded-xl border-2 transition-all ${
-                          selectedRole === 'SECURITY_OFFICER'
-                            ? 'border-[#1D4ED8] bg-[#1D4ED8]/10 dark:bg-[#1D4ED8]/20'
-                            : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800'
-                        }`}
-                      >
-                        <Shield className="h-5 w-5 mx-auto mb-1" />
-                        <span className="text-sm font-medium">Security</span>
-                      </button>
-                    </div>
-                  </div>
-
-                  {/* Invitation Code for Security Officers */}
-                  {selectedRole === 'SECURITY_OFFICER' && (
-                    <motion.div
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      exit={{ opacity: 0, height: 0 }}
-                      className="space-y-2"
-                    >
-                      <label htmlFor="invitationCode" className="text-sm font-semibold text-slate-900 dark:text-slate-50">
-                        Invitation Code <span className="text-[#F43F5E]">*</span>
+                    </>
+                  )}
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="signup"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <form onSubmit={handleSignup} className="space-y-4">
+                    <div className="space-y-2">
+                      <label htmlFor="name" className="text-sm font-semibold text-[#0F172A] flex items-center gap-2">
+                        <User className="h-4 w-4 text-[#2563EB]" />
+                        Full Name
                       </label>
                       <input
-                        id="invitationCode"
+                        id="name"
                         type="text"
-                        value={invitationCode}
-                        onChange={(e) => setInvitationCode(e.target.value)}
-                        placeholder="Enter your invitation code"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                        placeholder="John Doe"
                         required
-                        className="w-full h-14 rounded-xl border-2 border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 px-5 text-base font-medium text-slate-900 dark:text-slate-50 placeholder:text-slate-500 transition-all focus:border-[#1D4ED8] focus:ring-4 focus:ring-[#1D4ED8]/20"
+                        className="w-full h-12 rounded-xl border-2 border-slate-200 bg-white px-4 text-base text-[#0F172A] placeholder:text-slate-400 transition-all focus:border-[#2563EB] focus:ring-4 focus:ring-[#2563EB]/10"
                       />
-                      <p className="text-xs text-slate-600 dark:text-slate-400">
-                        Security officers require an invitation code to register
-                      </p>
-                    </motion.div>
-                  )}
+                    </div>
 
-                  <Button
-                    type="submit"
-                    size="lg"
-                    className="w-full h-14 bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg mt-6"
-                    disabled={isLoading || !name || !signupEmail || !signupPassword || !confirmPassword}
-                  >
-                    {isLoading ? (
-                      <>
-                        <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-                        Creating account...
-                      </>
-                    ) : (
-                      <>
-                        <UserPlus className="mr-2 h-5 w-5" />
-                        Create Account
-                      </>
+                    <div className="space-y-2">
+                      <label htmlFor="signupEmail" className="text-sm font-semibold text-[#0F172A] flex items-center gap-2">
+                        <Mail className="h-4 w-4 text-[#2563EB]" />
+                        Email
+                      </label>
+                      <input
+                        id="signupEmail"
+                        type="email"
+                        value={signupEmail}
+                        onChange={(e) => setSignupEmail(e.target.value)}
+                        placeholder="your@email.com"
+                        required
+                        className="w-full h-12 rounded-xl border-2 border-slate-200 bg-white px-4 text-base text-[#0F172A] placeholder:text-slate-400 transition-all focus:border-[#2563EB] focus:ring-4 focus:ring-[#2563EB]/10"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <label htmlFor="signupPassword" className="text-sm font-semibold text-[#0F172A] flex items-center gap-2">
+                        <Lock className="h-4 w-4 text-[#2563EB]" />
+                        Password
+                      </label>
+                      <div className="relative">
+                        <input
+                          id="signupPassword"
+                          type={showSignupPassword ? 'text' : 'password'}
+                          value={signupPassword}
+                          onChange={(e) => setSignupPassword(e.target.value)}
+                          placeholder="Create a password"
+                          required
+                          minLength={6}
+                          className="w-full h-12 rounded-xl border-2 border-slate-200 bg-white px-4 pr-12 text-base text-[#0F172A] placeholder:text-slate-400 transition-all focus:border-[#2563EB] focus:ring-4 focus:ring-[#2563EB]/10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowSignupPassword(!showSignupPassword)}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#0F172A]"
+                        >
+                          {showSignupPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                        </button>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <label htmlFor="confirmPassword" className="text-sm font-semibold text-[#0F172A] flex items-center gap-2">
+                        <Lock className="h-4 w-4 text-[#2563EB]" />
+                        Confirm Password
+                      </label>
+                      <div className="relative">
+                        <input
+                          id="confirmPassword"
+                          type={showConfirmPassword ? 'text' : 'password'}
+                          value={confirmPassword}
+                          onChange={(e) => setConfirmPassword(e.target.value)}
+                          placeholder="Confirm your password"
+                          required
+                          minLength={6}
+                          className="w-full h-12 rounded-xl border-2 border-slate-200 bg-white px-4 pr-12 text-base text-[#0F172A] placeholder:text-slate-400 transition-all focus:border-[#2563EB] focus:ring-4 focus:ring-[#2563EB]/10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-[#0F172A]"
+                        >
+                          {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Role Selection */}
+                    <div className="space-y-2">
+                      <label className="text-sm font-semibold text-[#0F172A]">
+                        Select Your Role
+                      </label>
+                      <div className="grid grid-cols-2 gap-3">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setSelectedRole('USER')
+                            setInvitationCode('')
+                          }}
+                          className={`h-14 rounded-xl border-2 transition-all ${
+                            selectedRole === 'USER'
+                              ? 'border-[#2563EB] bg-[#DBEAFE]'
+                              : 'border-slate-200 bg-white hover:border-slate-300'
+                          }`}
+                        >
+                          <User className="h-5 w-5 mx-auto mb-1" />
+                          <span className="text-sm font-medium">User</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedRole('SECURITY_OFFICER')}
+                          className={`h-14 rounded-xl border-2 transition-all ${
+                            selectedRole === 'SECURITY_OFFICER'
+                              ? 'border-[#2563EB] bg-[#DBEAFE]'
+                              : 'border-slate-200 bg-white hover:border-slate-300'
+                          }`}
+                        >
+                          <Shield className="h-5 w-5 mx-auto mb-1" />
+                          <span className="text-sm font-medium">Security</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Invitation Code for Security Officers */}
+                    {selectedRole === 'SECURITY_OFFICER' && (
+                      <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: 'auto' }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="space-y-2"
+                      >
+                        <label htmlFor="invitationCode" className="text-sm font-semibold text-[#0F172A]">
+                          Invitation Code <span className="text-[#EF4444]">*</span>
+                        </label>
+                        <input
+                          id="invitationCode"
+                          type="text"
+                          value={invitationCode}
+                          onChange={(e) => setInvitationCode(e.target.value)}
+                          placeholder="Enter your invitation code"
+                          required
+                          className="w-full h-12 rounded-xl border-2 border-slate-200 bg-white px-4 text-base text-[#0F172A] placeholder:text-slate-400 transition-all focus:border-[#2563EB] focus:ring-4 focus:ring-[#2563EB]/10"
+                        />
+                        <p className="text-xs text-slate-500">
+                          Security officers require an invitation code to register
+                        </p>
+                      </motion.div>
                     )}
-                  </Button>
-                </form>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
+
+                    <Button
+                      type="submit"
+                      size="lg"
+                      className="w-full h-12 bg-[#2563EB] hover:bg-[#1E40AF] text-white shadow-lg rounded-xl font-semibold mt-6"
+                      disabled={isLoading || !name || !signupEmail || !signupPassword || !confirmPassword}
+                    >
+                      {isLoading ? (
+                        <>
+                          <div className="mr-2 h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                          Creating account...
+                        </>
+                      ) : (
+                        <>
+                          Create Account
+                          <ArrowRight className="ml-2 h-5 w-5" />
+                        </>
+                      )}
+                    </Button>
+                  </form>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
       </motion.div>
     </div>
   )
 }
-
