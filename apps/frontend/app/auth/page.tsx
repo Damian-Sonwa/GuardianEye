@@ -28,11 +28,17 @@ export default function AuthPage() {
         setMode('signup')
       }
       
-      // Check for role update message
+      // Check for role update message - only show once
       const message = params.get('message')
       if (message === 'role-updated') {
-        alert('Your role has been updated. Please log in again to access new features.')
+        // Clean up URL immediately to prevent re-triggering
         window.history.replaceState({}, '', '/auth')
+        // Show alert only once
+        const hasShownAlert = sessionStorage.getItem('role-updated-alert-shown')
+        if (!hasShownAlert) {
+          sessionStorage.setItem('role-updated-alert-shown', 'true')
+          alert('Your role has been updated. Please log in again to access new features.')
+        }
       }
     }
   }, [])

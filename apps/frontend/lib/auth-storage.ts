@@ -144,10 +144,10 @@ export async function refreshUserData(force = false): Promise<any | null> {
               
               // If tokenVersion doesn't match, token is invalid
               if (payload.tokenVersion !== undefined && payload.tokenVersion !== userData.tokenVersion) {
-                // Token invalidated - clear auth and redirect
+                // Token invalidated - clear auth and redirect (without role-updated message)
                 clearAuthData()
                 if (typeof window !== 'undefined') {
-                  window.location.href = '/auth?message=role-updated'
+                  window.location.href = '/auth'
                 }
                 return null
               }
@@ -164,7 +164,7 @@ export async function refreshUserData(force = false): Promise<any | null> {
           // Token expired or invalid, clear auth data
           clearAuthData()
           if (typeof window !== 'undefined') {
-            window.location.href = '/auth?message=role-updated'
+            window.location.href = '/auth'
           }
           return null
         }

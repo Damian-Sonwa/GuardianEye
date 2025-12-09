@@ -91,7 +91,7 @@ export async function checkAndHandleTokenInvalidation(): Promise<boolean> {
   if (!isValid) {
     // Token is invalid - redirect to auth page
     if (typeof window !== 'undefined') {
-      window.location.href = '/auth?message=role-updated'
+      window.location.href = '/auth'
     }
     return false
   }
