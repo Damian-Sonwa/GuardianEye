@@ -110,8 +110,8 @@ export function RoleRouter({ children }: { children: React.ReactNode }) {
     const checkAuthAndRole = async () => {
       // Skip check for public routes (including landing page at root)
       // The landing page handles its own redirect logic for authenticated users
-      // Also handle case where pathname might be empty on initial load
-      if (!pathname || publicRoutes.includes(pathname) || pathname === '/') {
+      // Handle root path explicitly - it should always show landing page first
+      if (pathname === '/' || publicRoutes.includes(pathname)) {
         setIsChecking(false)
         return
       }

@@ -40,29 +40,39 @@ export default function LandingPage() {
         // Only redirect if user is authenticated
         // Unauthenticated users should see the landing page
         if (isAuthenticated()) {
-          const userData = await refreshUserData()
-          if (userData) {
-            setIsAuthenticatedUser(true)
-            const userRole = userData.role
-            if (userRole === 'SUPER_ADMIN') {
-              router.replace('/admin/dashboard')
-            } else if (userRole === 'SECURITY_OFFICER') {
-              router.replace('/security/dashboard')
-            } else {
-              router.replace('/home')
+          try {
+            const userData = await refreshUserData()
+            if (userData) {
+              setIsAuthenticatedUser(true)
+              const userRole = userData.role
+              if (userRole === 'SUPER_ADMIN') {
+                router.replace('/admin/dashboard')
+              } else if (userRole === 'SECURITY_OFFICER') {
+                router.replace('/security/dashboard')
+              } else {
+                router.replace('/home')
+              }
+              return
             }
-            return
+          } catch (error) {
+            // If refresh fails, user might not be authenticated, show landing page
+            console.error('Error refreshing user data:', error)
           }
         }
         // If not authenticated, show landing page (don't redirect)
+        setIsLoading(false)
       } catch (error) {
         console.error('Error checking auth:', error)
-      } finally {
         setIsLoading(false)
       }
     }
     
-    checkAndRedirect()
+    // Small delay to ensure RoleRouter has finished its check
+    const timer = setTimeout(() => {
+      checkAndRedirect()
+    }, 100)
+    
+    return () => clearTimeout(timer)
   }, [router])
 
   if (isLoading) {
