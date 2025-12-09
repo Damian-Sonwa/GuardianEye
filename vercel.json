@@ -2,6 +2,7 @@
   "buildCommand": "npm install && npm run build --workspace=@security-app/frontend",
   "outputDirectory": "apps/frontend/.next",
   "installCommand": "npm install",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD ./apps/frontend"
 }
 
