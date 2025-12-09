@@ -6,8 +6,8 @@
     "deleteOutDir": true,
     "outDir": "./dist",
     "webpack": false,
-    "tsConfigPath": "tsconfig.json"
-  },
-  "root": "."
+    "tsConfigPath": "tsconfig.json",
+    "assets": []
+  }
 }
 
