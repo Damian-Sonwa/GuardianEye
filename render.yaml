@@ -4,8 +4,8 @@ services:
     name: security-app-api
     env: node
     plan: starter
-    buildCommand: npm install && cd apps/api && echo "Starting build in: $(pwd)" && npx prisma generate && echo "Prisma generated" && npm run build && echo "Build command completed" && if [ ! -f dist/main.js ]; then echo "ERROR: Build failed - dist/main.js not found" && echo "Current directory: $(pwd)" && echo "Contents:" && ls -la && echo "Checking for dist:" && ls -la dist/ 2>&1 || echo "dist directory does not exist" && exit 1; else echo "✓ Build successful: dist/main.js exists" && ls -lh dist/main.js; fi
-    startCommand: cd apps/api && node dist/main.js
+    buildCommand: npm install && cd apps/api && npx prisma generate && npm run build && test -f dist/src/main.js && echo "✓ Build successful: dist/src/main.js exists" || (echo "ERROR: Build failed - dist/src/main.js not found" && ls -la dist/ 2>&1 && exit 1)
+    startCommand: cd apps/api && npm run start:prod
     envVars:
       - key: NODE_ENV
         value: production
