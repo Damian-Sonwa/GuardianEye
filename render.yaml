@@ -4,8 +4,8 @@ services:
     name: security-app-api
     env: node
     plan: starter
-    buildCommand: npm install && cd apps/api && npx prisma generate && npm run build && ls -la dist/ && echo "Build completed successfully"
-    startCommand: cd apps/api && ls -la && ls -la dist/ && node dist/main.js
+    buildCommand: npm install && cd apps/api && npx prisma generate && npm run build && test -f dist/main.js || (echo "Build failed: dist/main.js not found" && ls -la && exit 1)
+    startCommand: cd apps/api && node dist/main.js
     envVars:
       - key: NODE_ENV
         value: production
