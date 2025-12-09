@@ -27,11 +27,11 @@ import {
 export const dynamic = 'force-dynamic'
 
 const COLORS = {
-  emerald: '#10b981',
-  blue: '#3b82f6',
-  amber: '#f59e0b',
-  red: '#ef4444',
-  purple: '#8b5cf6',
+  primary: '#2563EB',
+  accent: '#3B82F6',
+  success: '#10B981',
+  warning: '#f59e0b',
+  error: '#EF4444',
   slate: '#64748b',
 }
 
@@ -74,7 +74,7 @@ export default function AnalyticsPage() {
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-emerald-600" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#2563EB]" />
       </div>
     )
   }
@@ -89,17 +89,17 @@ export default function AnalyticsPage() {
 
   const userDistributionData = analytics?.users
     ? [
-        { name: 'Regular Users', value: analytics.users.regularUsers, color: COLORS.blue },
-        { name: 'Security Officers', value: analytics.users.securityOfficers, color: COLORS.emerald },
-        { name: 'Admins', value: analytics.users.admins, color: COLORS.purple },
+        { name: 'Regular Users', value: analytics.users.regularUsers, color: COLORS.primary },
+        { name: 'Security Officers', value: analytics.users.securityOfficers, color: COLORS.accent },
+        { name: 'Admins', value: analytics.users.admins, color: COLORS.primary },
       ].filter((item) => item.value > 0)
     : []
 
   const verificationStatusData = analytics?.verifications
     ? [
-        { name: 'Approved', value: analytics.verifications.approved, color: COLORS.emerald },
-        { name: 'Pending', value: analytics.verifications.pending, color: COLORS.amber },
-        { name: 'Rejected', value: analytics.verifications.rejected, color: COLORS.red },
+        { name: 'Approved', value: analytics.verifications.approved, color: COLORS.success },
+        { name: 'Pending', value: analytics.verifications.pending, color: COLORS.warning },
+        { name: 'Rejected', value: analytics.verifications.rejected, color: COLORS.error },
       ].filter((item) => item.value > 0)
     : []
 
@@ -108,15 +108,17 @@ export default function AnalyticsPage() {
   const dailyPanicData = analytics?.charts?.dailyPanic || []
 
   return (
-    <div className="flex min-h-screen flex-col bg-background pb-20">
-      <header className="sticky top-0 z-10 border-b bg-background/95 backdrop-blur">
+    <div className="flex min-h-screen flex-col bg-[#F8FAFC] pb-20">
+      <header className="sticky top-0 z-10 border-b border-slate-200/50 bg-white/80 backdrop-blur-md shadow-sm">
         <div className="flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-3">
             <Button variant="ghost" size="icon" onClick={() => router.back()}>
               <ArrowLeft className="h-5 w-5" />
             </Button>
-            <BarChart3 className="h-6 w-6 text-purple-600 dark:text-purple-400" />
-            <h1 className="text-xl font-bold">Analytics Dashboard</h1>
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#2563EB] to-[#3B82F6] flex items-center justify-center">
+              <BarChart3 className="h-6 w-6 text-white" />
+            </div>
+            <h1 className="text-xl font-bold text-[#0F172A]">Analytics Dashboard</h1>
           </div>
         </div>
       </header>
@@ -124,34 +126,34 @@ export default function AnalyticsPage() {
       <main className="flex-1 p-6 space-y-6 max-w-7xl mx-auto">
         {/* Summary Cards */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <Card className="rounded-2xl">
+          <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <CardContent className="p-6">
-              <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Total Reports</p>
-              <p className="text-3xl font-bold text-slate-900 dark:text-slate-50">
+              <p className="text-sm text-slate-600 mb-1">Total Reports</p>
+              <p className="text-3xl font-bold text-[#0F172A]">
                 {analytics?.reports?.total || 0}
               </p>
             </CardContent>
           </Card>
-          <Card className="rounded-2xl">
+          <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <CardContent className="p-6">
-              <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Total Cases</p>
-              <p className="text-3xl font-bold text-slate-900 dark:text-slate-50">
+              <p className="text-sm text-slate-600 mb-1">Total Cases</p>
+              <p className="text-3xl font-bold text-[#0F172A]">
                 {analytics?.cases?.total || 0}
               </p>
             </CardContent>
           </Card>
-          <Card className="rounded-2xl">
+          <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <CardContent className="p-6">
-              <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Total Users</p>
-              <p className="text-3xl font-bold text-slate-900 dark:text-slate-50">
+              <p className="text-sm text-slate-600 mb-1">Total Users</p>
+              <p className="text-3xl font-bold text-[#0F172A]">
                 {analytics?.users?.total || 0}
               </p>
             </CardContent>
           </Card>
-          <Card className="rounded-2xl">
+          <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <CardContent className="p-6">
-              <p className="text-sm text-slate-600 dark:text-slate-400 mb-1">Panic Alerts</p>
-              <p className="text-3xl font-bold text-red-600 dark:text-red-400">
+              <p className="text-sm text-slate-600 mb-1">Panic Alerts</p>
+              <p className="text-3xl font-bold text-[#EF4444]">
                 {analytics?.panicAlerts?.total || 0}
               </p>
             </CardContent>
@@ -159,23 +161,23 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Reports Over Time Chart */}
-        <Card className="rounded-2xl">
-          <CardHeader className="p-6">
-            <CardTitle className="text-lg">Reports Over Time (Last 30 Days)</CardTitle>
-          </CardHeader>
-          <CardContent className="p-6 pt-0">
+          <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <CardHeader className="p-6">
+              <CardTitle className="text-lg font-bold text-[#0F172A]">Reports Over Time (Last 30 Days)</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 pt-0">
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={dailyReportsData}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200 dark:stroke-slate-700" />
+                <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200" />
                 <XAxis
                   dataKey="date"
                   tickFormatter={(value) => {
                     const date = new Date(value)
                     return `${date.getMonth() + 1}/${date.getDate()}`
                   }}
-                  className="text-xs text-slate-600 dark:text-slate-400"
+                  className="text-xs text-slate-600"
                 />
-                <YAxis className="text-xs text-slate-600 dark:text-slate-400" />
+                <YAxis className="text-xs text-slate-600" />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: 'rgba(255, 255, 255, 0.95)',
@@ -191,10 +193,10 @@ export default function AnalyticsPage() {
                 <Line
                   type="monotone"
                   dataKey="count"
-                  stroke={COLORS.emerald}
+                  stroke={COLORS.primary}
                   strokeWidth={2}
                   name="Reports"
-                  dot={{ fill: COLORS.emerald, r: 4 }}
+                  dot={{ fill: COLORS.primary, r: 4 }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -209,16 +211,16 @@ export default function AnalyticsPage() {
           <CardContent className="p-6 pt-0">
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={dailyCasesData}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200 dark:stroke-slate-700" />
+                <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200" />
                 <XAxis
                   dataKey="date"
                   tickFormatter={(value) => {
                     const date = new Date(value)
                     return `${date.getMonth() + 1}/${date.getDate()}`
                   }}
-                  className="text-xs text-slate-600 dark:text-slate-400"
+                  className="text-xs text-slate-600"
                 />
-                <YAxis className="text-xs text-slate-600 dark:text-slate-400" />
+                <YAxis className="text-xs text-slate-600" />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: 'rgba(255, 255, 255, 0.95)',
@@ -234,18 +236,18 @@ export default function AnalyticsPage() {
                 <Line
                   type="monotone"
                   dataKey="created"
-                  stroke={COLORS.blue}
+                  stroke={COLORS.accent}
                   strokeWidth={2}
                   name="Created"
-                  dot={{ fill: COLORS.blue, r: 4 }}
+                  dot={{ fill: COLORS.accent, r: 4 }}
                 />
                 <Line
                   type="monotone"
                   dataKey="resolved"
-                  stroke={COLORS.emerald}
+                  stroke={COLORS.primary}
                   strokeWidth={2}
                   name="Resolved"
-                  dot={{ fill: COLORS.emerald, r: 4 }}
+                  dot={{ fill: COLORS.primary, r: 4 }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -260,16 +262,16 @@ export default function AnalyticsPage() {
           <CardContent className="p-6 pt-0">
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={dailyPanicData}>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200 dark:stroke-slate-700" />
+                <CartesianGrid strokeDasharray="3 3" className="stroke-slate-200" />
                 <XAxis
                   dataKey="date"
                   tickFormatter={(value) => {
                     const date = new Date(value)
                     return `${date.getMonth() + 1}/${date.getDate()}`
                   }}
-                  className="text-xs text-slate-600 dark:text-slate-400"
+                  className="text-xs text-slate-600"
                 />
-                <YAxis className="text-xs text-slate-600 dark:text-slate-400" />
+                <YAxis className="text-xs text-slate-600" />
                 <Tooltip
                   contentStyle={{
                     backgroundColor: 'rgba(255, 255, 255, 0.95)',
@@ -282,7 +284,7 @@ export default function AnalyticsPage() {
                   }}
                 />
                 <Legend />
-                <Bar dataKey="count" fill={COLORS.red} name="Panic Alerts" radius={[8, 8, 0, 0]} />
+                <Bar dataKey="count" fill={COLORS.error} name="Panic Alerts" radius={[8, 8, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </CardContent>
@@ -380,27 +382,27 @@ export default function AnalyticsPage() {
         {/* Detailed Statistics */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Cases Statistics */}
-          <Card className="rounded-2xl">
+          <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <CardHeader className="p-6">
-              <CardTitle className="text-lg">Case Management</CardTitle>
+              <CardTitle className="text-lg font-bold text-[#0F172A]">Case Management</CardTitle>
             </CardHeader>
             <CardContent className="p-6 pt-0">
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-600 dark:text-slate-400">Resolved</span>
-                  <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+                  <span className="text-sm text-slate-600">Resolved</span>
+                  <span className="text-2xl font-bold text-[#10B981]">
                     {analytics?.cases?.resolved || 0}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-600 dark:text-slate-400">Unresolved</span>
-                  <span className="text-2xl font-bold text-amber-600 dark:text-amber-400">
+                  <span className="text-sm text-slate-600">Unresolved</span>
+                  <span className="text-2xl font-bold text-amber-600">
                     {analytics?.cases?.unresolved || 0}
                   </span>
                 </div>
-                <div className="flex justify-between items-center pt-4 border-t border-slate-200 dark:border-slate-700">
-                  <span className="text-sm font-semibold text-slate-900 dark:text-slate-50">Resolution Rate</span>
-                  <span className="text-2xl font-bold text-slate-900 dark:text-slate-50">
+                <div className="flex justify-between items-center pt-4 border-t border-slate-200">
+                  <span className="text-sm font-semibold text-[#0F172A]">Resolution Rate</span>
+                  <span className="text-2xl font-bold text-[#0F172A]">
                     {analytics?.cases?.resolutionRate?.toFixed(1) || 0}%
                   </span>
                 </div>
@@ -409,27 +411,27 @@ export default function AnalyticsPage() {
           </Card>
 
           {/* Verification Statistics */}
-          <Card className="rounded-2xl">
+          <Card className="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <CardHeader className="p-6">
-              <CardTitle className="text-lg">Security Verifications</CardTitle>
+              <CardTitle className="text-lg font-bold text-[#0F172A]">Security Verifications</CardTitle>
             </CardHeader>
             <CardContent className="p-6 pt-0">
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-600 dark:text-slate-400">Approved</span>
-                  <span className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+                  <span className="text-sm text-slate-600">Approved</span>
+                  <span className="text-2xl font-bold text-[#10B981]">
                     {analytics?.verifications?.approved || 0}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-600 dark:text-slate-400">Pending</span>
-                  <span className="text-2xl font-bold text-amber-600 dark:text-amber-400">
+                  <span className="text-sm text-slate-600">Pending</span>
+                  <span className="text-2xl font-bold text-amber-600">
                     {analytics?.verifications?.pending || 0}
                   </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-600 dark:text-slate-400">Rejected</span>
-                  <span className="text-2xl font-bold text-red-600 dark:text-red-400">
+                  <span className="text-sm text-slate-600">Rejected</span>
+                  <span className="text-2xl font-bold text-[#EF4444]">
                     {analytics?.verifications?.rejected || 0}
                   </span>
                 </div>
