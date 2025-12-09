@@ -124,6 +124,14 @@ const nextConfig = {
       '@': path.resolve(__dirname),
     }
 
+    // Resolve modules from root node_modules (for workspace dependencies)
+    const rootNodeModules = path.resolve(__dirname, '../../node_modules')
+    config.resolve.modules = [
+      ...(config.resolve.modules || []),
+      path.resolve(__dirname, 'node_modules'),
+      rootNodeModules,
+    ]
+
     if (!isServer) {
       // Optimize chunk splitting without breaking layout
       config.optimization.splitChunks = {
