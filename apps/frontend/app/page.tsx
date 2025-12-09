@@ -37,6 +37,8 @@ export default function LandingPage() {
   useEffect(() => {
     const checkAndRedirect = async () => {
       try {
+        // Only redirect if user is authenticated
+        // Unauthenticated users should see the landing page
         if (isAuthenticated()) {
           const userData = await refreshUserData()
           if (userData) {
@@ -52,6 +54,7 @@ export default function LandingPage() {
             return
           }
         }
+        // If not authenticated, show landing page (don't redirect)
       } catch (error) {
         console.error('Error checking auth:', error)
       } finally {
